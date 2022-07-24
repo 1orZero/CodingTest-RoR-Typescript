@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
-  before_action :set_todo_item, only: [:edit_todo_item]
-  # around_action :get_todo_items, only: [:edit_todo_item, :reset_todo_items]
+  before_action :set_todo_item, only: [:edit_todo_item, :del_todo_item]
 
   def landing
     get_todo_items
@@ -15,6 +14,11 @@ class HomeController < ApplicationController
 
   def reset_todo_items
     Todo.update_all(checked: false)
+    render :json => get_todo_items
+  end
+
+  def del_todo_item
+    @todo_item.destroy
     render :json => get_todo_items
   end
 

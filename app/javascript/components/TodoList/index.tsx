@@ -35,12 +35,25 @@ const TodoList: React.FC<Props> = ({ todoItems }) => {
 			id: todoItemId,
 			checked: e.target.checked,
 		})) as AxiosResponse<TodoItem[]>;
-		setTodos(res.data);
+		if (res.status === 200) {
+			setTodos(res.data);
+		}
 	};
 
 	const resetButtonOnClick = async () => {
 		const res = (await axios.post("/reset")) as AxiosResponse<TodoItem[]>;
-		setTodos(res.data);
+		if (res.status === 200) {
+			setTodos(res.data);
+		}
+	};
+
+	const delItem = async (id: number) => {
+		const res = (await axios.post("/del", {
+			id,
+		})) as AxiosResponse<TodoItem[]>;
+		if (res.status === 200) {
+			setTodos(res.data);
+		}
 	};
 
 	const handleAddSuccess = (newData: TodoItem[]) => {
@@ -54,12 +67,21 @@ const TodoList: React.FC<Props> = ({ todoItems }) => {
 			<ListGroup>
 				{todos.map((todo) => (
 					<ListGroup.Item key={todo.id}>
-						<Form.Check
-							type="checkbox"
-							label={todo.title}
-							checked={todo.checked}
-							onChange={(e) => checkBoxOnCheck(e, todo.id)}
-						/>
+						<TodoItemContainer>
+							<Form.Check
+								type="checkbox"
+								label={todo.title}
+								checked={todo.checked}
+								onChange={(e) => checkBoxOnCheck(e, todo.id)}
+							/>
+							<label
+								className="text-danger"
+								style={{ cursor: "pointer" }}
+								onClick={() => delItem(todo.id)}
+							>
+								DEL
+							</label>
+						</TodoItemContainer>
 					</ListGroup.Item>
 				))}
 				<ButtonContainer>
@@ -79,6 +101,11 @@ const TodoList: React.FC<Props> = ({ todoItems }) => {
 		</Container>
 	);
 };
+const TodoItemContainer = styled.div`
+	display: grid;
+	grid-template-columns: 1fr auto;
+	column-gap: 10px;
+`;
 const ButtonContainer = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr;
