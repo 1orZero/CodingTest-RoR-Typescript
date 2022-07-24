@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Container, ListGroup, Form } from "react-bootstrap";
-import { ResetButton } from "./uiComponent";
+import { Container, ListGroup, Form, Modal } from "react-bootstrap";
+import { ResetButton, AddButton } from "./uiComponent";
+import styled from "styled-components";
 import axios, { AxiosResponse } from "axios";
 
 type TodoItem = {
@@ -22,6 +23,9 @@ const TodoList: React.FC<Props> = ({ todoItems }) => {
 	}, []);
 
 	const [todos, setTodos] = useState(todoItems);
+	const [show, setShow] = useState(false);
+	const handleShow = () => setShow(true);
+	const handleClose = () => setShow(false);
 
 	const checkBoxOnCheck = async (
 		e: React.ChangeEvent<HTMLInputElement>,
@@ -39,6 +43,11 @@ const TodoList: React.FC<Props> = ({ todoItems }) => {
 		setTodos(res.data);
 	};
 
+	const handleAddSuccess = (newData: TodoItem[]) => {
+		handleClose();
+		setTodos(newData);
+	};
+
 	return (
 		<Container>
 			<h3>2022 Wish List</h3>
@@ -53,10 +62,61 @@ const TodoList: React.FC<Props> = ({ todoItems }) => {
 						/>
 					</ListGroup.Item>
 				))}
-				<ResetButton onClick={resetButtonOnClick}>Reset</ResetButton>
+				<ButtonContainer>
+					<AddButton onClick={handleShow}>Add</AddButton>
+					<ResetButton onClick={resetButtonOnClick}>
+						Reset
+					</ResetButton>
+				</ButtonContainer>
 			</ListGroup>
+			<aside>
+				<AddNewTodoModal
+					show={show}
+					onHide={handleClose}
+					onAddSuccess={handleAddSuccess}
+				></AddNewTodoModal>
+			</aside>
 		</Container>
 	);
 };
+const ButtonContainer = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 10px;
+`;
 
 export default TodoList;
+
+const AddNewTodoModal = ({ show, onHide, onAddSuccess }) => {
+	const [title, setTitle] = useState("");
+	const addNewTodo = async () => {
+		const res = (await axios.post("/add", {
+			title,
+			checked: false,
+		})) as AxiosResponse<TodoItem[]>;
+		if (res.status === 200) {
+			onAddSuccess(res.data);
+		}
+	};
+
+	return (
+		<Modal show={show} onHide={onHide}>
+			<Modal.Header closeButton>
+				<Modal.Title>Add new Todo</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<Form>
+					<Form.Group className="mb-3" controlId="formGroupEmail">
+						<Form.Label>Title</Form.Label>
+						<Form.Control
+							type="text"
+							onChange={(e) => setTitle(e.target.value)}
+							placeholder="Enter TODO title"
+						/>
+					</Form.Group>
+					<AddButton onClick={addNewTodo}>Submit</AddButton>
+				</Form>
+			</Modal.Body>
+		</Modal>
+	);
+};

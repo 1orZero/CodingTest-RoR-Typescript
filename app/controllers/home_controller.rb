@@ -5,26 +5,32 @@ class HomeController < ApplicationController
   # around_action :get_todo_items, only: [:edit_todo_item, :reset_todo_items]
 
   def landing
-    @todos = Todo.all.order(:id)
+    get_todo_items
   end
 
   def edit_todo_item
     @todo_item.update(todo_item_params)
-    @todos = Todo.all.order(:id)
-    render :json => @todos
+    render :json => get_todo_items
   end
 
   def reset_todo_items
     Todo.update_all(checked: false)
-    @todos = Todo.all.order(:id)
-    render :json => @todos
+    render :json => get_todo_items
+  end
+
+  def add_todo_item
+    @item = Todo.new(todo_item_params)
+    if @item.save
+      render :json => get_todo_items
+    else
+      render :json => { success: false }
+    end
   end
 
   private
 
   def get_todo_items
     @todos = Todo.all.order(:id)
-    # render :json => @todos
   end
 
   def todo_item_params
