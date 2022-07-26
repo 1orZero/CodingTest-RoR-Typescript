@@ -132,7 +132,7 @@ const AddNewTodoModal = ({ show, onHide, onAddSuccess }) => {
 				<Modal.Title>Add new Todo</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<Form>
+				<Form onSubmit={addNewTodo}>
 					<Form.Group className="mb-3" controlId="formGroupEmail">
 						<Form.Label>Title</Form.Label>
 						<Form.Control
