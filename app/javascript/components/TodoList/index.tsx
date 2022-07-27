@@ -8,6 +8,7 @@ type TodoItem = {
 	id: number;
 	title: string;
 	checked: boolean;
+	category_id: number;
 };
 
 type Props = {
