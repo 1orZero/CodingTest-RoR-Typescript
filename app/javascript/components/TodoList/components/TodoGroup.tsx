@@ -1,0 +1,100 @@
+import axios, { AxiosResponse } from "axios";
+import React, { useEffect, useState } from "react";
+import { Form, ListGroup } from "react-bootstrap";
+import styled from "styled-components";
+import { TodoItem } from "..";
+import { AddButton, ResetButton } from "../uiComponent";
+import AddNewTodoModal from "./AddNewTodoModal";
+
+const TodoGroup: React.FC<{ todoItems: TodoItem[] }> = ({ todoItems }) => {
+	const [todos, setTodos] = useState(todoItems);
+	const [show, setShow] = useState(false);
+	const delItem = async (id: number) => {
+		const res = (await axios.post("/del", {
+			id,
+		})) as AxiosResponse<TodoItem[]>;
+		if (res.status === 200) {
+			setTodos(res.data);
+		}
+	};
+	const handleShow = () => setShow(true);
+	const handleClose = () => setShow(false);
+
+	const checkBoxOnCheck = async (
+		e: React.ChangeEvent<HTMLInputElement>,
+		todoItemId: number
+	) => {
+		const res = (await axios.post("/todo", {
+			id: todoItemId,
+			checked: e.target.checked,
+		})) as AxiosResponse<TodoItem[]>;
+		if (res.status === 200) {
+			setTodos(res.data);
+		}
+	};
+	const resetButtonOnClick = async () => {
+		const res = (await axios.post("/reset")) as AxiosResponse<TodoItem[]>;
+		if (res.status === 200) {
+			setTodos(res.data);
+		}
+	};
+	const handleAddSuccess = (newData: TodoItem[]) => {
+		handleClose();
+		setTodos(newData);
+	};
+
+	const categoryName = "Category";
+	return (
+		<>
+			<ListGroup>
+				<ListGroup.Item active>
+					<label>{categoryName}</label>
+				</ListGroup.Item>
+				{todos.map((todo) => (
+					<ListGroup.Item key={todo.id}>
+						<TodoItemContainer>
+							<Form.Check
+								type="checkbox"
+								label={todo.title}
+								checked={todo.checked}
+								onChange={(e) => checkBoxOnCheck(e, todo.id)}
+							/>
+							<label
+								className="text-danger"
+								style={{ cursor: "pointer" }}
+								onClick={() => delItem(todo.id)}
+							>
+								DEL
+							</label>
+						</TodoItemContainer>
+					</ListGroup.Item>
+				))}
+				<ButtonContainer>
+					<AddButton onClick={handleShow}>Add</AddButton>
+					<ResetButton onClick={resetButtonOnClick}>
+						Reset
+					</ResetButton>
+				</ButtonContainer>
+			</ListGroup>
+			<aside>
+				<AddNewTodoModal
+					show={show}
+					onHide={handleClose}
+					onAddSuccess={handleAddSuccess}
+				></AddNewTodoModal>
+			</aside>
+		</>
+	);
+};
+export default TodoGroup;
+
+const TodoItemContainer = styled.div`
+	display: grid;
+	grid-template-columns: 1fr auto;
+	column-gap: 10px;
+`;
+const ButtonContainer = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 10px;
+`;
