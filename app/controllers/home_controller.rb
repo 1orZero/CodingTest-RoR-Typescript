@@ -2,30 +2,30 @@
 
 class HomeController < ApplicationController
   before_action :set_todo_item, only: [:edit_todo_item, :del_todo_item]
+  before_action :get_todo_items, only: [:landing, :edit_todo_item, :reset_todo_items, :del_todo_item, :add_todo_item]
 
   def landing
-    get_todo_items
   end
 
   def edit_todo_item
     @todo_item.update(todo_item_params)
-    render :json => get_todo_items
+    render :json => @todos
   end
 
   def reset_todo_items
     Todo.update_all(checked: false)
-    render :json => get_todo_items
+    render :json => @todos
   end
 
   def del_todo_item
     @todo_item.destroy
-    render :json => get_todo_items
+    render :json => @todos
   end
 
   def add_todo_item
     @item = Todo.new(todo_item_params)
     if @item.save
-      render :json => get_todo_items
+      render :json => @todos
     else
       render :json => { success: false }
     end
