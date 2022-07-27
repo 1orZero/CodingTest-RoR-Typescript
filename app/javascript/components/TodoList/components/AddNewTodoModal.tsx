@@ -10,6 +10,7 @@ const AddNewTodoModal = ({ show, onHide, onAddSuccess }) => {
 		const res = (await axios.post("/add", {
 			title,
 			checked: false,
+			category_id: 1,
 		})) as AxiosResponse<TodoItem[]>;
 		if (res.status === 200) {
 			onAddSuccess(res.data);
