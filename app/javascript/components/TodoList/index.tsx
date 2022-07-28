@@ -3,6 +3,8 @@ import { Container } from "react-bootstrap";
 import axios from "axios";
 import TodoGroup from "./components/TodoGroup";
 import styled from "styled-components";
+import { Provider } from "react-redux";
+import store from "../../reducers/store";
 
 export type TodoItem = {
 	id: number;
@@ -37,23 +39,25 @@ const TodoList: React.FC<Props> = ({ todoItems, categories }) => {
 	}, []);
 
 	return (
-		<Container>
-			<h3>2022 Wish List</h3>
-			<GroupContainer>
-				{categories.map((category, index) => {
-					return (
-						<TodoGroup
-							key={index}
-							todoItems={getItemsByCategory(
-								todoItems,
-								category.id
-							)}
-							category={category}
-						/>
-					);
-				})}
-			</GroupContainer>
-		</Container>
+		<Provider store={store}>
+			<Container>
+				<h3>2022 Wish List</h3>
+				<GroupContainer>
+					{categories.map((category, index) => {
+						return (
+							<TodoGroup
+								key={index}
+								todoItems={getItemsByCategory(
+									todoItems,
+									category.id
+								)}
+								category={category}
+							/>
+						);
+					})}
+				</GroupContainer>
+			</Container>
+		</Provider>
 	);
 };
 

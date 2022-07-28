@@ -3,6 +3,8 @@ import axios, { AxiosResponse } from "axios";
 import { TodoItem } from "..";
 import { Form, Modal } from "react-bootstrap";
 import { AddButton } from "../uiComponent";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 interface NewTodoModalProps {
 	show: boolean;
@@ -28,12 +30,20 @@ const AddNewTodoModal: React.FC<NewTodoModalProps> = ({
 		}
 	};
 
+	const count = useSelector<number, number>((state) => state);
+	const dispatch = useDispatch();
+	const increase = () => {
+		dispatch({ type: "INCREMENT", payload: 1 });
+	};
+
 	return (
 		<Modal show={show} onHide={onHide}>
 			<Modal.Header closeButton>
 				<Modal.Title>Add new Todo</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
+				{count}
+				<button onClick={increase}> Add </button>
 				<Form onSubmit={addNewTodo}>
 					<Form.Group className="mb-3" controlId="formGroupEmail">
 						<Form.Label>Title</Form.Label>
