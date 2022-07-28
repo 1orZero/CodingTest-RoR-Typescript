@@ -2,11 +2,14 @@ import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { Form, ListGroup } from "react-bootstrap";
 import styled from "styled-components";
-import { TodoItem } from "..";
+import { TodoCategory, TodoItem } from "..";
 import { AddButton, ResetButton } from "../uiComponent";
 import AddNewTodoModal from "./AddNewTodoModal";
 
-const TodoGroup: React.FC<{ todoItems: TodoItem[] }> = ({ todoItems }) => {
+const TodoGroup: React.FC<{
+	todoItems: TodoItem[];
+	category: TodoCategory;
+}> = ({ todoItems, category }) => {
 	const [todos, setTodos] = useState(todoItems);
 	const [show, setShow] = useState(false);
 	const delItem = async (id: number) => {
@@ -43,32 +46,39 @@ const TodoGroup: React.FC<{ todoItems: TodoItem[] }> = ({ todoItems }) => {
 		setTodos(newData);
 	};
 
-	const categoryName = "Category";
 	return (
 		<>
 			<ListGroup>
 				<ListGroup.Item active>
-					<label>{categoryName}</label>
+					<label>{category.name}</label>
 				</ListGroup.Item>
-				{todos.map((todo) => (
-					<ListGroup.Item key={todo.id}>
-						<TodoItemContainer>
-							<Form.Check
-								type="checkbox"
-								label={todo.title}
-								checked={todo.checked}
-								onChange={(e) => checkBoxOnCheck(e, todo.id)}
-							/>
-							<label
-								className="text-danger"
-								style={{ cursor: "pointer" }}
-								onClick={() => delItem(todo.id)}
-							>
-								DEL
-							</label>
-						</TodoItemContainer>
+				{todos.length > 0 ? (
+					todos.map((todo) => (
+						<ListGroup.Item key={todo.id}>
+							<TodoItemContainer>
+								<Form.Check
+									type="checkbox"
+									label={todo.title}
+									checked={todo.checked}
+									onChange={(e) =>
+										checkBoxOnCheck(e, todo.id)
+									}
+								/>
+								<label
+									className="text-danger"
+									style={{ cursor: "pointer" }}
+									onClick={() => delItem(todo.id)}
+								>
+									DEL
+								</label>
+							</TodoItemContainer>
+						</ListGroup.Item>
+					))
+				) : (
+					<ListGroup.Item className="text-muted text-center">
+						No todos yet
 					</ListGroup.Item>
-				))}
+				)}
 				<ButtonContainer>
 					<AddButton onClick={handleShow}>Add</AddButton>
 					<ResetButton onClick={resetButtonOnClick}>
