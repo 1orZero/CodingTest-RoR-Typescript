@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
+  before_action :get_categorys, only: [:landing]
   before_action :set_todo_item, only: [:edit_todo_item, :del_todo_item]
   before_action :get_todo_items, only: [:landing, :edit_todo_item, :reset_todo_items, :del_todo_item, :add_todo_item]
-  before_action :get_categorys, only: [:landing]
+
+  # before_action :get_todo_items_by_category_id, only: [:add_todo_item,:reset_todo_items]
 
   def landing
   end
@@ -40,6 +42,9 @@ class HomeController < ApplicationController
 
   def get_todo_items
     @todos = Todo.all.order(:id)
+    if params[:category_id].present?
+      @todos = @todos.where(category_id: params[:category_id])
+    end
   end
 
   def todo_item_params

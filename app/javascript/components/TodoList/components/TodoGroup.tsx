@@ -15,6 +15,7 @@ const TodoGroup: React.FC<{
 	const delItem = async (id: number) => {
 		const res = (await axios.post("/del", {
 			id,
+			category_id: category.id,
 		})) as AxiosResponse<TodoItem[]>;
 		if (res.status === 200) {
 			setTodos(res.data);
@@ -23,20 +24,23 @@ const TodoGroup: React.FC<{
 	const handleShow = () => setShow(true);
 	const handleClose = () => setShow(false);
 
-	const checkBoxOnCheck = async (
+	const toggleCheckState = async (
 		e: React.ChangeEvent<HTMLInputElement>,
 		todoItemId: number
 	) => {
 		const res = (await axios.post("/todo", {
 			id: todoItemId,
 			checked: e.target.checked,
+			category_id: category.id,
 		})) as AxiosResponse<TodoItem[]>;
 		if (res.status === 200) {
 			setTodos(res.data);
 		}
 	};
 	const resetButtonOnClick = async () => {
-		const res = (await axios.post("/reset")) as AxiosResponse<TodoItem[]>;
+		const res = (await axios.post("/reset", {
+			category_id: category.id,
+		})) as AxiosResponse<TodoItem[]>;
 		if (res.status === 200) {
 			setTodos(res.data);
 		}
@@ -61,7 +65,7 @@ const TodoGroup: React.FC<{
 									label={todo.title}
 									checked={todo.checked}
 									onChange={(e) =>
-										checkBoxOnCheck(e, todo.id)
+										toggleCheckState(e, todo.id)
 									}
 								/>
 								<label
@@ -90,6 +94,7 @@ const TodoGroup: React.FC<{
 				<AddNewTodoModal
 					show={show}
 					onHide={handleClose}
+					category_id={category.id}
 					onAddSuccess={handleAddSuccess}
 				></AddNewTodoModal>
 			</aside>

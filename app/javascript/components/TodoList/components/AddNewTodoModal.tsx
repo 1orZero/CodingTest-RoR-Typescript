@@ -4,13 +4,24 @@ import { TodoItem } from "..";
 import { Form, Modal } from "react-bootstrap";
 import { AddButton } from "../uiComponent";
 
-const AddNewTodoModal = ({ show, onHide, onAddSuccess }) => {
+interface NewTodoModalProps {
+	show: boolean;
+	category_id: number;
+	onHide: () => void;
+	onAddSuccess: (newData: TodoItem[]) => void;
+}
+const AddNewTodoModal: React.FC<NewTodoModalProps> = ({
+	show,
+	category_id,
+	onHide,
+	onAddSuccess,
+}) => {
 	const [title, setTitle] = useState("");
 	const addNewTodo = async () => {
 		const res = (await axios.post("/add", {
 			title,
 			checked: false,
-			category_id: 1,
+			category_id,
 		})) as AxiosResponse<TodoItem[]>;
 		if (res.status === 200) {
 			onAddSuccess(res.data);
