@@ -2,10 +2,9 @@ import React, { useEffect } from "react";
 import TodoGroup from "./components/TodoGroup";
 import styled from "styled-components";
 
-import { TodoItem } from "../../reducers/todoReducer";
+import { TodoCategory, TodoItem } from "../../reducers/todoReducer";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import store, { RootState } from "../../reducers/store";
-import { TodoCategory } from "../../reducers/categoryReducer";
 
 type Props = {
 	todoItems: TodoItem[];

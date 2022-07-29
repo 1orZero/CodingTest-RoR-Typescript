@@ -1,17 +1,13 @@
-import { createStore, applyMiddleware, combineReducers, Store } from "redux";
+import { createStore, applyMiddleware, combineReducers } from "redux";
 import {
 	createStateSyncMiddleware,
 	initStateWithPrevTab,
 	withReduxStateSync,
 } from "redux-state-sync";
-import categoryReducer from "./categoryReducer";
-import counterReducer from "./counterReducer";
 import todoReducer from "./todoReducer";
 
 const reducers = combineReducers({
 	todo: todoReducer,
-	// category: categoryReducer,
-	// count: counterReducer,
 });
 
 const middlewares = [createStateSyncMiddleware({})];
