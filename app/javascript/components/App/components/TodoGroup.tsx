@@ -2,7 +2,8 @@ import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { Form, ListGroup } from "react-bootstrap";
 import styled from "styled-components";
-import { TodoCategory, TodoItem } from "..";
+import { TodoCategory } from "../../../reducers/categoryReducer";
+import { TodoItem } from "../../../reducers/todoReducer";
 import { AddButton, ResetButton } from "../uiComponent";
 import AddNewTodoModal from "./AddNewTodoModal";
 

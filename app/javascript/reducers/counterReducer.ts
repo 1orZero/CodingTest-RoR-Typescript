@@ -16,4 +16,4 @@ const counterReducer = (state = 0, action: ActionType) => {
 			return state;
 	}
 };
-export default withReduxStateSync(counterReducer);
+export default counterReducer;
