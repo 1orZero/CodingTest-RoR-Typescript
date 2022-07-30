@@ -6,4 +6,7 @@ Rails.application.routes.draw do
   post "reset", to: "home#reset_todo_items"
   post "add", to: "home#add_todo_item"
   post "del", to: "home#del_todo_item"
+  post "add", to: "home#add_todo_item"
+  post "addCategory", to: "category#add_category_item"
+  post "delCategory", to: "category#del_category_item"
 end

@@ -6,6 +6,7 @@ import { TodoCategory, TodoItem, TodoState } from "../../reducers/todoReducer";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers/store";
 import { updateCategories, updateTodoItems } from "../../actions/todoAction";
+import AddNewCategory from "./components/AddNewCategory";
 
 type Props = {
 	todoItems: TodoItem[];
@@ -44,6 +45,7 @@ const TodoList: React.FC<Props> = ({ todoItems, categories }) => {
 					/>
 				);
 			})}
+			<AddNewCategory />
 		</GroupContainer>
 	);
 };

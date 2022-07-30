@@ -1,9 +1,10 @@
 import axios, { AxiosResponse } from "axios";
 import React, { useState } from "react";
 import { Form, ListGroup } from "react-bootstrap";
+import { FolderMinus } from "react-bootstrap-icons";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { updateTodoItems } from "../../../actions/todoAction";
+import { updateCategories, updateTodoItems } from "../../../actions/todoAction";
 import { TodoCategory, TodoItem } from "../../../reducers/todoReducer";
 import { AddButton, ResetButton } from "../uiComponent";
 import AddNewTodoModal from "./AddNewTodoModal";
@@ -51,12 +52,25 @@ const TodoGroup: React.FC<{
 		handleClose();
 		dispatch(updateTodoItems(newData));
 	};
+	const delCategory = async () => {
+		const res = (await axios.post("/delCategory", {
+			id: category.id,
+		})) as AxiosResponse<TodoCategory[]>;
+		if (res.status === 200) {
+			dispatch(updateCategories(res.data));
+		}
+	};
 
 	return (
 		<>
 			<ListGroup>
 				<ListGroup.Item active>
-					<label>{category.name}</label>
+					<TodoTitleContainer>
+						<label>{category.name}</label>
+						<ButtonStyle onClick={delCategory}>
+							<FolderMinus></FolderMinus>
+						</ButtonStyle>
+					</TodoTitleContainer>
 				</ListGroup.Item>
 				{todoItems.length > 0 ? (
 					todoItems.map((todo) => (
@@ -108,10 +122,22 @@ export default TodoGroup;
 const TodoItemContainer = styled.div`
 	display: grid;
 	grid-template-columns: 1fr auto;
+	align-items: center;
 	column-gap: 10px;
 `;
 const ButtonContainer = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	column-gap: 10px;
+`;
+
+const TodoTitleContainer = styled.div`
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	column-gap: 10px;
+`;
+
+const ButtonStyle = styled.div`
+	cursor: pointer;
 `;
