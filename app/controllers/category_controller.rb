@@ -12,6 +12,14 @@ class CategoryController < ApplicationController
   end
 
   def del_category_item
+    @categoryTodos = Todo.where(category_id: @category_item.id)
+
+    if @categoryTodos.count > 0
+      @categoryTodos.each do |todo|
+        todo.destroy
+      end
+    end
+
     @category_item.destroy
     render :json => @categories
   end
