@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import TodoGroup from "./components/TodoGroup";
 import styled from "styled-components";
 
-import { TodoCategory, TodoItem } from "../../reducers/todoReducer";
+import { TodoCategory, TodoItem, TodoState } from "../../reducers/todoReducer";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import store, { RootState } from "../../reducers/store";
+import { RootState } from "../../reducers/store";
+import { updateCategories, updateTodoItems } from "../../actions/todoAction";
 
 type Props = {
 	todoItems: TodoItem[];
@@ -16,9 +17,8 @@ function getItemsByCategory(items: TodoItem[], categoryId: number) {
 }
 
 const TodoList: React.FC<Props> = ({ todoItems, categories }) => {
-	// const storeTodos = useSelector((state: RootState) => state.todo.todoItems);
-	const storeTodo = useSelector(
-		(state: RootState) => state.todo,
+	const storeTodo = useSelector<RootState, TodoState>(
+		(state) => state.todo,
 		shallowEqual
 	);
 
@@ -26,21 +26,20 @@ const TodoList: React.FC<Props> = ({ todoItems, categories }) => {
 
 	useEffect(() => {
 		// Apply Data to Store
-		dispatch({ type: "SET_TODO_ITEMS", payload: todoItems });
-		// console.log(storeCategories);
-		dispatch({ type: "SET_CATEGORIES", payload: categories });
-		// console.log(storeCategories);
-		console.log("useEffect");
+		dispatch(updateTodoItems(todoItems));
+		dispatch(updateCategories(categories));
 	}, []);
 
 	return (
 		<GroupContainer>
-			{/* <div className="">{storeCount}</div> */}
 			{storeTodo.categories.map((category, index) => {
 				return (
 					<TodoGroup
 						key={index}
-						todoItems={getItemsByCategory(todoItems, category.id)}
+						todoItems={getItemsByCategory(
+							storeTodo.todoItem,
+							category.id
+						)}
 						category={category}
 					/>
 				);

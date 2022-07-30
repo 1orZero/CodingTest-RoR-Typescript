@@ -16,7 +16,11 @@ class HomeController < ApplicationController
   end
 
   def reset_todo_items
-    Todo.update_all(checked: false)
+    @oneCategoryTodos = @todos.where(category_id: params[:category_id])
+    @oneCategoryTodos.each do |todo|
+      todo.update(checked: false)
+    end
+
     render :json => @todos
   end
 
@@ -42,9 +46,9 @@ class HomeController < ApplicationController
 
   def get_todo_items
     @todos = Todo.all.order(:id)
-    if params[:category_id].present?
-      @todos = @todos.where(category_id: params[:category_id])
-    end
+    # if params[:category_id].present?
+    #   @todos = @todos.where(category_id: params[:category_id])
+    # end
   end
 
   def todo_item_params

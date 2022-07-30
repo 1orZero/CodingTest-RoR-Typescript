@@ -1,7 +1,9 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Form, ListGroup } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { updateTodoItems } from "../../../actions/todoAction";
 import { TodoCategory, TodoItem } from "../../../reducers/todoReducer";
 import { AddButton, ResetButton } from "../uiComponent";
 import AddNewTodoModal from "./AddNewTodoModal";
@@ -10,17 +12,9 @@ const TodoGroup: React.FC<{
 	todoItems: TodoItem[];
 	category: TodoCategory;
 }> = ({ todoItems, category }) => {
-	const [todos, setTodos] = useState(todoItems);
+	const dispatch = useDispatch();
 	const [show, setShow] = useState(false);
-	const delItem = async (id: number) => {
-		const res = (await axios.post("/del", {
-			id,
-			category_id: category.id,
-		})) as AxiosResponse<TodoItem[]>;
-		if (res.status === 200) {
-			setTodos(res.data);
-		}
-	};
+
 	const handleShow = () => setShow(true);
 	const handleClose = () => setShow(false);
 
@@ -31,10 +25,18 @@ const TodoGroup: React.FC<{
 		const res = (await axios.post("/todo", {
 			id: todoItemId,
 			checked: e.target.checked,
+		})) as AxiosResponse<TodoItem[]>;
+		if (res.status === 200) {
+			dispatch(updateTodoItems(res.data));
+		}
+	};
+	const delItem = async (id: number) => {
+		const res = (await axios.post("/del", {
+			id,
 			category_id: category.id,
 		})) as AxiosResponse<TodoItem[]>;
 		if (res.status === 200) {
-			setTodos(res.data);
+			dispatch(updateTodoItems(res.data));
 		}
 	};
 	const resetButtonOnClick = async () => {
@@ -42,12 +44,12 @@ const TodoGroup: React.FC<{
 			category_id: category.id,
 		})) as AxiosResponse<TodoItem[]>;
 		if (res.status === 200) {
-			setTodos(res.data);
+			dispatch(updateTodoItems(res.data));
 		}
 	};
 	const handleAddSuccess = (newData: TodoItem[]) => {
 		handleClose();
-		setTodos(newData);
+		dispatch(updateTodoItems(newData));
 	};
 
 	return (
@@ -56,8 +58,8 @@ const TodoGroup: React.FC<{
 				<ListGroup.Item active>
 					<label>{category.name}</label>
 				</ListGroup.Item>
-				{todos.length > 0 ? (
-					todos.map((todo) => (
+				{todoItems.length > 0 ? (
+					todoItems.map((todo) => (
 						<ListGroup.Item key={todo.id}>
 							<TodoItemContainer>
 								<Form.Check

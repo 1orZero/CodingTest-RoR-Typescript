@@ -18,10 +18,14 @@ interface ActionType {
 	type: string;
 	payload: TodoCategory[] | TodoItem[];
 }
+
+export type TodoState = typeof initState;
+
 const initState = {
 	todoItem: [] as TodoItem[],
 	categories: [] as TodoCategory[],
 };
+
 const todoReducer = (state = initState, action: ActionType) => {
 	switch (action.type) {
 		case "SET_TODO_ITEMS":
