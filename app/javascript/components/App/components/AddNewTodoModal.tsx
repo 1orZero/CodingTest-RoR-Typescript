@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { Form, Modal } from "react-bootstrap";
 import { AddButton } from "../uiComponent";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { RootState } from "../../../reducers/store";
 import { TodoItem } from "../../../reducers/todoReducer";
 
 interface NewTodoModalProps {

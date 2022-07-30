@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import axios from "axios";
-import styled from "styled-components";
 import { Provider } from "react-redux";
 import store from "../../reducers/store";
 import { TodoCategory, TodoItem } from "../../reducers/todoReducer";
@@ -19,16 +18,6 @@ const App: React.FC<Props> = ({ todoItems, categories }) => {
 		) as HTMLMetaElement;
 		axios.defaults.headers.common["X-CSRF-TOKEN"] = token.content;
 	}, []);
-	// useEffect(() => {
-	// 	function onStorageUpdate(e: any) {
-	// 		console.log(e);
-	// 		console.log("storage changed");
-	// 	}
-	// 	window.addEventListener("storage", onStorageUpdate);
-	// 	return () => {
-	// 		window.removeEventListener("storage", onStorageUpdate);
-	// 	};
-	// }, []);
 
 	return (
 		<Provider store={store}>

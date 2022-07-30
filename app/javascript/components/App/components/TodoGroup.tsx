@@ -8,16 +8,18 @@ import { updateCategories, updateTodoItems } from "../../../actions/todoAction";
 import { TodoCategory, TodoItem } from "../../../reducers/todoReducer";
 import { AddButton, ResetButton } from "../uiComponent";
 import AddNewTodoModal from "./AddNewTodoModal";
+import HistoryModal from "./HistoryModal";
 
 const TodoGroup: React.FC<{
 	todoItems: TodoItem[];
 	category: TodoCategory;
 }> = ({ todoItems, category }) => {
 	const dispatch = useDispatch();
-	const [show, setShow] = useState(false);
+	const [showAdd, setShowAdd] = useState(false);
+	const [showHistory, setShowHistory] = useState(false);
 
-	const handleShow = () => setShow(true);
-	const handleClose = () => setShow(false);
+	const handleShow = () => setShowAdd(true);
+	const handleClose = () => setShowAdd(false);
 
 	const toggleCheckState = async (
 		e: React.ChangeEvent<HTMLInputElement>,
@@ -60,6 +62,9 @@ const TodoGroup: React.FC<{
 			dispatch(updateCategories(res.data));
 		}
 	};
+	const openHistoryModal = (todoId: number) => {
+		setShowHistory(true);
+	};
 
 	return (
 		<>
@@ -85,6 +90,13 @@ const TodoGroup: React.FC<{
 									}
 								/>
 								<label
+									className="text-primary"
+									style={{ cursor: "pointer" }}
+									onClick={() => openHistoryModal(todo.id)}
+								>
+									HISTORY
+								</label>
+								<label
 									className="text-danger"
 									style={{ cursor: "pointer" }}
 									onClick={() => delItem(todo.id)}
@@ -108,11 +120,15 @@ const TodoGroup: React.FC<{
 			</ListGroup>
 			<aside>
 				<AddNewTodoModal
-					show={show}
+					show={showAdd}
 					onHide={handleClose}
 					category_id={category.id}
 					onAddSuccess={handleAddSuccess}
 				></AddNewTodoModal>
+				<HistoryModal
+					show={showHistory}
+					onHide={() => setShowHistory(false)}
+				></HistoryModal>
 			</aside>
 		</>
 	);
@@ -121,7 +137,7 @@ export default TodoGroup;
 
 const TodoItemContainer = styled.div`
 	display: grid;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: 1fr auto auto;
 	align-items: center;
 	column-gap: 10px;
 `;
