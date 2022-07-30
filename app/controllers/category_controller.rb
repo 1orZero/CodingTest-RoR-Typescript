@@ -31,7 +31,7 @@ class CategoryController < ApplicationController
   end
 
   def category_item_params
-    params.permit(:id, :name)
+    params.except(:category).permit(:id, :name)
   end
 
   def set_category_item
