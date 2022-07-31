@@ -45,14 +45,11 @@ class TodoController < ApplicationController
   end
 
   def get_todo_items
-    @todos = Todo.all.order(:id)
-    # if params[:category_id].present?
-    #   @todos = @todos.where(category_id: params[:category_id])
-    # end
+    @todos = Todo.select("*").joins(:history)
   end
 
   def todo_item_params
-    params.except(:home).permit(:id, :checked, :category_id)
+    params.except(:todo).permit(:id, :checked, :category_id)
   end
 
   def set_todo_item
