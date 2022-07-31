@@ -52,7 +52,7 @@ class HomeController < ApplicationController
   end
 
   def todo_item_params
-    params.except(:home).permit(:id, :title, :checked, :category_id)
+    params.except(:home).permit(:id,:checked, :category_id)
   end
 
   def set_todo_item

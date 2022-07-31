@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_27_143317) do
+ActiveRecord::Schema.define(version: 2022_07_31_042138) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,8 +22,15 @@ ActiveRecord::Schema.define(version: 2022_07_27_143317) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "histories", force: :cascade do |t|
+    t.string "content"
+    t.bigint "todo_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["todo_id"], name: "index_histories_on_todo_id"
+  end
+
   create_table "todos", force: :cascade do |t|
-    t.string "title"
     t.boolean "checked", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
