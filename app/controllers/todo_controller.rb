@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class HomeController < ApplicationController
+class TodoController < ApplicationController
   before_action :set_todo_item, only: [:edit_todo_item, :del_todo_item]
   before_action :get_categorys, only: [:landing]
   before_action :get_todo_items, only: [:landing, :edit_todo_item, :reset_todo_items, :del_todo_item, :add_todo_item]
@@ -52,7 +52,7 @@ class HomeController < ApplicationController
   end
 
   def todo_item_params
-    params.except(:home).permit(:id,:checked, :category_id)
+    params.except(:home).permit(:id, :checked, :category_id)
   end
 
   def set_todo_item
