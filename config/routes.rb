@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   post "del", to: "todo#del_todo_item"
   post "addCategory", to: "category#add_category_item"
   post "delCategory", to: "category#del_category_item"
+  post "getHistoryByTodoId", to: "history#get_history_item_by_todo_id"
 end
