@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
-import axios, { AxiosResponse } from "axios";
 import { ListGroup, Modal } from "react-bootstrap";
 import { AddButton } from "../uiComponent";
 import { TodoItem } from "../../../reducers/todoReducer";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import TodoAPI from "../../../api/TodoAPI";
-import { shallowEqual, useDispatch } from "react-redux";
-import { updateTodoItems } from "../../../actions/todoAction";
-import { useSelector } from "react-redux";
 
 dayjs.extend(require("dayjs/plugin/localizedFormat"));
-interface NewTodoModalProps {
+interface HistoryModalProps {
 	show: boolean;
 	selectedTodo: TodoItem;
 	onHide: () => void;
@@ -25,7 +21,7 @@ export interface HistoryRecord {
 	todo_id: number;
 }
 
-const historyModal: React.FC<NewTodoModalProps> = ({
+const historyModal: React.FC<HistoryModalProps> = ({
 	show,
 	selectedTodo,
 	onHide,
@@ -54,14 +50,25 @@ const historyModal: React.FC<NewTodoModalProps> = ({
 	}, [show]);
 
 	const revertContent = async () => {
-		const data = await TodoAPI.addHistory(
-			selectedTodo.id,
-			selectedRecord.content
-		);
-		if (data) {
-			onAddSuccess([...data]);
+		const originalContent = selectedTodo.content;
+		if (selectedRecord.content !== originalContent) {
+			const data = await TodoAPI.addHistory(
+				selectedTodo.id,
+				selectedRecord.content
+			);
+			if (data) {
+				onAddSuccess(data);
+			}
 		}
+
 		onHide();
+	};
+	const isActiveStyle = (record: HistoryRecord) => {
+		return selectedRecord && selectedRecord.id === record.id
+			? {
+					backgroundColor: "rgba(0,0,0,0.1)",
+			  }
+			: {};
 	};
 
 	return (
@@ -76,6 +83,7 @@ const historyModal: React.FC<NewTodoModalProps> = ({
 							<ListGroup.Item
 								as="li"
 								className="d-flex justify-content-between align-items-start"
+								style={isActiveStyle(record)}
 								action
 								key={index}
 								onClick={() => setSelectedRecord(record)}
@@ -87,7 +95,7 @@ const historyModal: React.FC<NewTodoModalProps> = ({
 										)}
 									</div>
 									<small className="text-muted">
-										{record.id}
+										{`history_id: ${record.id}`}
 									</small>
 								</div>
 							</ListGroup.Item>
@@ -108,7 +116,7 @@ export default historyModal;
 
 const Container = styled.section`
 	display: grid;
-	grid-template-columns: minmax(253px, 1.5fr) 5fr;
+	grid-template-columns: minmax(270px, 1.5fr) 5fr;
 	column-gap: 1rem;
 `;
 const ContentContainer = styled.div`
