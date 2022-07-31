@@ -8,6 +8,7 @@ import { updateCategories, updateTodoItems } from "../../../actions/todoAction";
 import { TodoCategory, TodoItem } from "../../../reducers/todoReducer";
 import { AddButton, ResetButton } from "../uiComponent";
 import AddNewTodoModal from "./AddNewTodoModal";
+import EditContent from "./EditContent";
 import HistoryModal from "./HistoryModal";
 
 const TodoGroup: React.FC<{
@@ -81,14 +82,24 @@ const TodoGroup: React.FC<{
 					todoItems.map((todo) => (
 						<ListGroup.Item key={todo.id}>
 							<TodoItemContainer>
-								<Form.Check
-									type="checkbox"
-									label={todo.title}
-									checked={todo.checked}
-									onChange={(e) =>
-										toggleCheckState(e, todo.id)
-									}
-								/>
+								<section
+									style={{
+										display: "grid",
+										columnGap: "10px",
+										gridAutoFlow: "column",
+										gridAutoColumns: "max-content",
+									}}
+								>
+									<Form.Check
+										type="checkbox"
+										checked={todo.checked}
+										onChange={(e) =>
+											toggleCheckState(e, todo.id)
+										}
+									/>
+									<EditContent todoItem={todo} />
+								</section>
+
 								<label
 									className="text-primary"
 									style={{ cursor: "pointer" }}

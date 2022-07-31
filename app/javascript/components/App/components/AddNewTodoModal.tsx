@@ -17,9 +17,11 @@ const AddNewTodoModal: React.FC<NewTodoModalProps> = ({
 	onAddSuccess,
 }) => {
 	const [title, setTitle] = useState("");
-	const addNewTodo = async () => {
+	const addNewTodo = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
 		const res = (await axios.post("/add", {
-			title,
+			content: title,
 			checked: false,
 			category_id,
 		})) as AxiosResponse<TodoItem[]>;

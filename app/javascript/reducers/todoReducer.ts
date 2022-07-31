@@ -2,9 +2,9 @@ import { withReduxStateSync } from "redux-state-sync";
 
 export interface TodoItem {
 	id: number;
-	title: string;
 	checked: boolean;
 	category_id: number;
+	content: string;
 }
 export interface TodoCategory {
 	id: number;
