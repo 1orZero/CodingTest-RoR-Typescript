@@ -23,11 +23,6 @@ const TodoList: React.FC<Props> = ({ todoItems, categories }) => {
 		shallowEqual
 	);
 
-	useEffect(() => {
-		console.log("todoItem useEffect");
-		console.log(storeTodo.todoItem);
-	}, [storeTodo.todoItem]);
-
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -38,18 +33,24 @@ const TodoList: React.FC<Props> = ({ todoItems, categories }) => {
 
 	return (
 		<GroupContainer>
-			{storeTodo.categories.map((category) => {
-				return (
-					<TodoGroup
-						key={category.id}
-						todoItems={getItemsByCategory(
-							storeTodo.todoItem,
-							category.id
-						)}
-						category={category}
-					/>
-				);
-			})}
+			{storeTodo.categories.length > 0 ? (
+				storeTodo.categories.map((category) => {
+					return (
+						<TodoGroup
+							key={category.id}
+							todoItems={getItemsByCategory(
+								storeTodo.todoItem,
+								category.id
+							)}
+							category={category}
+						/>
+					);
+				})
+			) : (
+				<div className="text-center text-muted">
+					No category yet, please add one.
+				</div>
+			)}
 			<AddNewCategory />
 		</GroupContainer>
 	);

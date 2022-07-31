@@ -35,19 +35,10 @@ const historyModal: React.FC<NewTodoModalProps> = ({
 	const [selectedRecord, setSelectedRecord] = useState<HistoryRecord | null>(
 		null
 	);
-	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (show) {
-			const getHistoryById = async () => {
-				const res = (await axios.post("/getHistoryByTodoId", {
-					todo_id: selectedTodo.id,
-				})) as AxiosResponse<HistoryRecord[]>;
-				if (res.status === 200) return res.data;
-				return null;
-			};
-
-			getHistoryById()
+			TodoAPI.getHistoryById(selectedTodo.id)
 				.then((data) => {
 					if (data && data.length > 0) {
 						setRecordList(data);

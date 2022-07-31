@@ -1,10 +1,10 @@
-import axios, { AxiosResponse } from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Form, ListGroup } from "react-bootstrap";
-import { FolderMinus } from "react-bootstrap-icons";
+import { Trash } from "react-bootstrap-icons";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { updateCategories, updateTodoItems } from "../../../actions/todoAction";
+import TodoAPI from "../../../api/TodoAPI";
 import { TodoCategory, TodoItem } from "../../../reducers/todoReducer";
 import { AddButton, ResetButton } from "../uiComponent";
 import AddNewTodoModal from "./AddNewTodoModal";
@@ -27,42 +27,28 @@ const TodoGroup: React.FC<{
 		e: React.ChangeEvent<HTMLInputElement>,
 		todoItemId: number
 	) => {
-		const res = (await axios.post("/todo", {
-			id: todoItemId,
-			checked: e.target.checked,
-		})) as AxiosResponse<TodoItem[]>;
-		if (res.status === 200) {
-			dispatch(updateTodoItems(res.data));
-		}
+		const data = await TodoAPI.updateCheckState(
+			todoItemId,
+			e.target.checked
+		);
+
+		if (data) dispatch(updateTodoItems(data));
 	};
 	const delItem = async (id: number) => {
-		const res = (await axios.post("/del", {
-			id,
-			category_id: category.id,
-		})) as AxiosResponse<TodoItem[]>;
-		if (res.status === 200) {
-			dispatch(updateTodoItems(res.data));
-		}
+		const data = await TodoAPI.deleteTodo(id, category.id);
+		if (data) dispatch(updateTodoItems(data));
 	};
+
 	const resetButtonOnClick = async () => {
-		const res = (await axios.post("/reset", {
-			category_id: category.id,
-		})) as AxiosResponse<TodoItem[]>;
-		if (res.status === 200) {
-			dispatch(updateTodoItems(res.data));
-		}
+		const data = await TodoAPI.resetTodoByCategoryId(category.id);
+		if (data) dispatch(updateTodoItems(data));
 	};
 	const handleAddSuccess = (newData: TodoItem[]) => {
-		handleClose();
 		dispatch(updateTodoItems(newData));
 	};
 	const delCategory = async () => {
-		const res = (await axios.post("/delCategory", {
-			id: category.id,
-		})) as AxiosResponse<TodoCategory[]>;
-		if (res.status === 200) {
-			dispatch(updateCategories(res.data));
-		}
+		const data = await TodoAPI.deleteCategory(category.id);
+		if (data) dispatch(updateCategories(data));
 	};
 	const openHistoryModal = (todo: TodoItem) => {
 		setSelectedTodo(todo);
@@ -76,7 +62,7 @@ const TodoGroup: React.FC<{
 					<TodoTitleContainer>
 						<label>{category.name}</label>
 						<ButtonStyle onClick={delCategory}>
-							<FolderMinus></FolderMinus>
+							<Trash></Trash>
 						</ButtonStyle>
 					</TodoTitleContainer>
 				</ListGroup.Item>
@@ -103,14 +89,14 @@ const TodoGroup: React.FC<{
 								</section>
 
 								<label
-									className="text-primary"
+									className="text-primary fw-bold"
 									style={{ cursor: "pointer" }}
 									onClick={() => openHistoryModal(todo)}
 								>
 									HISTORY
 								</label>
 								<label
-									className="text-danger"
+									className="fw-bold text-danger"
 									style={{ cursor: "pointer" }}
 									onClick={() => delItem(todo.id)}
 								>

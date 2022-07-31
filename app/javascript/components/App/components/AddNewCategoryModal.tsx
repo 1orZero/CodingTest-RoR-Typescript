@@ -6,6 +6,7 @@ import { RootState } from "../../../reducers/store";
 import { TodoCategory, TodoItem } from "../../../reducers/todoReducer";
 import { updateCategories } from "../../../actions/todoAction";
 import { useDispatch } from "react-redux";
+import TodoAPI from "../../../api/TodoAPI";
 
 interface NewTodoModalProps {
 	show: boolean;
@@ -15,11 +16,10 @@ const AddNewCategoryModal: React.FC<NewTodoModalProps> = ({ show, onHide }) => {
 	const dispatch = useDispatch();
 	const [title, setTitle] = useState("");
 	const addNewCategory = async () => {
-		const res = (await axios.post("/addCategory", {
-			name: title,
-		})) as AxiosResponse<TodoCategory[]>;
-		if (res.status === 200) {
-			dispatch(updateCategories(res.data));
+		const data = await TodoAPI.addCategory(title);
+
+		if (data) {
+			dispatch(updateCategories(data));
 			onHide();
 		}
 	};

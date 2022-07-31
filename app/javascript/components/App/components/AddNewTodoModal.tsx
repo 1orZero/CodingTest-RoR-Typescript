@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from "axios";
 import { Form, Modal } from "react-bootstrap";
 import { AddButton } from "../uiComponent";
 import { TodoItem } from "../../../reducers/todoReducer";
+import TodoAPI from "../../../api/TodoAPI";
 
 interface NewTodoModalProps {
 	show: boolean;
@@ -19,14 +20,11 @@ const AddNewTodoModal: React.FC<NewTodoModalProps> = ({
 	const [title, setTitle] = useState("");
 	const addNewTodo = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		const data = await TodoAPI.addNewTodo(title, false, category_id);
 
-		const res = (await axios.post("/add", {
-			content: title,
-			checked: false,
-			category_id,
-		})) as AxiosResponse<TodoItem[]>;
-		if (res.status === 200) {
-			onAddSuccess(res.data);
+		if (data) {
+			onAddSuccess(data);
+			onHide();
 		}
 	};
 
