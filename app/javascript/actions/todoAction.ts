@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from "axios";
 import { TodoCategory, TodoItem } from "../reducers/todoReducer";
 
 export const updateTodoItems = (todoItems: TodoItem[]) => {

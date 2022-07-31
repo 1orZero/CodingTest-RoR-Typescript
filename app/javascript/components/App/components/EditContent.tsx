@@ -1,8 +1,9 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { updateTodoItems } from "../../../actions/todoAction";
+import TodoAPI from "../../../api/TodoAPI";
 import { TodoItem } from "../../../reducers/todoReducer";
 
 interface Props {
@@ -13,24 +14,23 @@ const EditContent: React.FC<Props> = ({ todoItem }) => {
 	const [showEdit, setShowEdit] = useState(false);
 	const [content, setContent] = useState(todoItem.content);
 
+	useEffect(() => {
+		setContent(todoItem.content);
+	}, [todoItem]);
+
 	const dispatch = useDispatch();
 	const updateContent = async (e?: React.FormEvent<HTMLFormElement>) => {
 		if (e) e.preventDefault();
 
 		if (content !== todoItem.content) {
-			const res = (await axios.post("/addHistory", {
-				id: todoItem.id,
-				content,
-			})) as AxiosResponse<TodoItem[]>;
-			if (res.status === 200) {
-				dispatch(updateTodoItems(res.data));
+			const res = await TodoAPI.addHistory(todoItem.id, content);
+
+			if (res) {
+				dispatch(updateTodoItems(res));
 			}
 		}
 
 		setShowEdit(false);
-	};
-	const test = () => {
-		console.log("onSubmit");
 	};
 
 	return showEdit ? (

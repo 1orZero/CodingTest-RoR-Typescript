@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TodoGroup from "./components/TodoGroup";
 import styled from "styled-components";
 
@@ -23,6 +23,11 @@ const TodoList: React.FC<Props> = ({ todoItems, categories }) => {
 		shallowEqual
 	);
 
+	useEffect(() => {
+		console.log("todoItem useEffect");
+		console.log(storeTodo.todoItem);
+	}, [storeTodo.todoItem]);
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -33,10 +38,10 @@ const TodoList: React.FC<Props> = ({ todoItems, categories }) => {
 
 	return (
 		<GroupContainer>
-			{storeTodo.categories.map((category, index) => {
+			{storeTodo.categories.map((category) => {
 				return (
 					<TodoGroup
-						key={index}
+						key={category.id}
 						todoItems={getItemsByCategory(
 							storeTodo.todoItem,
 							category.id

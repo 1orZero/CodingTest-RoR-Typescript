@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, ListGroup } from "react-bootstrap";
 import { FolderMinus } from "react-bootstrap-icons";
 import { useDispatch } from "react-redux";
@@ -18,6 +18,7 @@ const TodoGroup: React.FC<{
 	const dispatch = useDispatch();
 	const [showAdd, setShowAdd] = useState(false);
 	const [showHistory, setShowHistory] = useState(false);
+	const [selectedTodo, setSelectedTodo] = useState<TodoItem | null>(null);
 
 	const handleShow = () => setShowAdd(true);
 	const handleClose = () => setShowAdd(false);
@@ -63,7 +64,8 @@ const TodoGroup: React.FC<{
 			dispatch(updateCategories(res.data));
 		}
 	};
-	const openHistoryModal = (todoId: number) => {
+	const openHistoryModal = (todo: TodoItem) => {
+		setSelectedTodo(todo);
 		setShowHistory(true);
 	};
 
@@ -103,7 +105,7 @@ const TodoGroup: React.FC<{
 								<label
 									className="text-primary"
 									style={{ cursor: "pointer" }}
-									onClick={() => openHistoryModal(todo.id)}
+									onClick={() => openHistoryModal(todo)}
 								>
 									HISTORY
 								</label>
@@ -139,6 +141,8 @@ const TodoGroup: React.FC<{
 				<HistoryModal
 					show={showHistory}
 					onHide={() => setShowHistory(false)}
+					selectedTodo={selectedTodo}
+					onAddSuccess={handleAddSuccess}
 				></HistoryModal>
 			</aside>
 		</>
